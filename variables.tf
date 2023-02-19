@@ -197,3 +197,23 @@ variable "final_snapshot_identifier" {
   type        = string
   description = "The name of your final DB snapshot when this DB instance is deleted."
 }
+
+variable "enabled_cloudwatch_logs_exports" {
+  description = "List of log types to enable for exporting to CloudWatch logs."
+  type        = list(string)
+  default     = ["audit", "error", "general"]
+}
+
+variable "monitoring_interval" {
+  description = "The interval, in seconds, between points when Enhanced Monitoring metrics are collected for the DB instance."
+  type        = number
+  default     = 15
+  }
+
+/*variable "monitoring_role_arn" {
+  description = "The ARN for the IAM role that permits RDS to send enhanced monitoring metrics to CloudWatch Logs."
+  type        = string
+  default     = "ecommerce"
+  
+}
+*/
