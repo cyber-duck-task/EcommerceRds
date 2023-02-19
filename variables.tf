@@ -120,7 +120,7 @@ variable "username" {
 }
 
 variable "db_password" {
-  description = "RDS root user password"
+  description = "RDS root user password encrypted with Base 64"
   type = string
   default = "R29kaXNhYmxlMjEK"
   sensitive   = true
