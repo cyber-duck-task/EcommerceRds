@@ -162,6 +162,13 @@ variable "storage_type" {
   default = "gp2"
 }
 
+variable "storage_encrypted" {
+  description = "Specifies whether the DB instance is encrypted."
+  type        = bool
+  default     = true
+  
+}
+
 variable "engine" {
   description = "RDS engine type name"
   type = string
