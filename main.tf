@@ -32,14 +32,8 @@ resource "aws_security_group" "rds" {
     from_port   = var.ingress_from_port
     to_port     = var.ingress_from_port
     protocol    = var.ingress_protocol
-    cidr_blocks = ["0.0.0.0/0"]
-  }
-
-  egress {
-    from_port   = var.egress_from_port
-    to_port     = var.egress_to_port
-    protocol    = var.egress_protocol
-    cidr_blocks = ["0.0.0.0/0"]
+    description = "MySQL access from within VPC"
+    cidr_blocks = var.ingress_cidr_blocks
   }
 
   tags = var.aws_security_group_tag_name
@@ -63,18 +57,45 @@ resource "aws_db_instance" "ecommerce" {
   max_allocated_storage  = var.max_allocated_storage
   storage_type           = var.storage_type
   storage_encrypted      = var.storage_encrypted
-  /* monitoring_role_arn    = var.monitoring_role_arn */
-  monitoring_interval    = var.monitoring_interval
-  enabled_cloudwatch_logs_exports = var.enabled_cloudwatch_logs_exports
   engine                 = var.engine
   engine_version         = var.engine_version
   multi_az               = var.multi_az
   username               = var.username
   password               = var.db_password
+  maintenance_window     = var.maintenance_window
+  backup_window          = var.backup_window
+  monitoring_role_arn    = aws_iam_role.rds_enhanced_monitoring.arn
+  monitoring_interval    = var.monitoring_interval
+  enabled_cloudwatch_logs_exports = var.enabled_cloudwatch_logs_exports
   db_subnet_group_name   = aws_db_subnet_group.ecommerce.name
   vpc_security_group_ids = [aws_security_group.rds.id]
   parameter_group_name   = aws_db_parameter_group.ecommerce.name
   publicly_accessible    = var.publicly_accessible
   skip_final_snapshot    = var.skip_final_snapshot
   final_snapshot_identifier = var.final_snapshot_identifier
+}
+
+resource "aws_iam_role" "rds_enhanced_monitoring" {
+  name_prefix        = "rds-enhanced-monitoring-"
+  assume_role_policy = data.aws_iam_policy_document.rds_enhanced_monitoring.json
+}
+
+resource "aws_iam_role_policy_attachment" "rds_enhanced_monitoring" {
+  role       = aws_iam_role.rds_enhanced_monitoring.name
+  policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonRDSEnhancedMonitoringRole"
+}
+
+data "aws_iam_policy_document" "rds_enhanced_monitoring" {
+  statement {
+    actions = [
+      "sts:AssumeRole",
+    ]
+
+    effect = "Allow"
+
+    principals {
+      type        = "Service"
+      identifiers = ["monitoring.rds.amazonaws.com"]
+    }
+  }
 }
