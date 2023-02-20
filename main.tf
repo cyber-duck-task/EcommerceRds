@@ -1,9 +1,12 @@
+# Terraform provider's block 
 provider "aws" {
   region = var.region
 }
 
+# Data source used to provision the availability zones
 data "aws_availability_zones" "available" {}
 
+# VPC module's block
 module "vpc" {
   source  = "terraform-aws-modules/vpc/aws"
   version = "2.77.0"
@@ -16,6 +19,7 @@ module "vpc" {
   enable_dns_support   = var.enable_dns_support
 }
 
+# Resource block for the DB subnet group
 resource "aws_db_subnet_group" "ecommerce" {
   
   subnet_ids = module.vpc.private_subnets
@@ -24,6 +28,7 @@ resource "aws_db_subnet_group" "ecommerce" {
 
 }
 
+# Resource block for the DB security group
 resource "aws_security_group" "rds" {
   name   = var.aws_security_group_name
   vpc_id = module.vpc.vpc_id
@@ -39,6 +44,7 @@ resource "aws_security_group" "rds" {
   tags = var.aws_security_group_tag_name
 }
 
+# Resource block for the parameter group
 resource "aws_db_parameter_group" "ecommerce" {
   name   = var.name
   family = var.family
@@ -49,6 +55,7 @@ resource "aws_db_parameter_group" "ecommerce" {
   }
 }
 
+# resource block for Db instance (E-commerce)
 resource "aws_db_instance" "ecommerce" {
   identifier             = var.identifier
   instance_class         = var.instance_class
@@ -75,6 +82,7 @@ resource "aws_db_instance" "ecommerce" {
   final_snapshot_identifier = var.final_snapshot_identifier
 }
 
+# Resource block for the IAM role attached to the enhanced monitoring role.
 resource "aws_iam_role" "rds_enhanced_monitoring" {
   name_prefix        = "rds-enhanced-monitoring-"
   assume_role_policy = data.aws_iam_policy_document.rds_enhanced_monitoring.json
