@@ -46,15 +46,15 @@ variable "aws_security_group_name" {
 }
 
 variable "ingress_from_port" {
-  description = "Ingress from port number"
+  description = "Ingress from port number is changed from default(3306) to a random port number to secure the DB_instance from hackers"
   type        = number
-  default     = 3306
+  default     = 5302
 }
 
 variable "ingress_to_port" {
-  description = "Ingress to port number"
+  description = "Ingress to port number is changed from default(3306) to a random port number to secure the DB_instance from hackers"
   type        = number
-  default     = 3306
+  default     = 5302
 }
 
 variable "ingress_protocol" {
@@ -123,20 +123,31 @@ variable "identifier" {
 variable "instance_class" {
   description = "RDS instance class"
   type        = string
-  default     = "db.t3.micro"
+  default     = "db.m5d.2xlarge"
 }
 
 variable "storage_encrypted" {
   description = "Specifies whether the DB instance is encrypted."
   type        = bool
   default     = true
-  
+  }
+
+variable "storage_type" {
+  description = "io1 (provisioned IOPS SSD)"
+  type        = string
+  default     = "io1"
 }
+
+variable "iops" {
+   description = "The amount of provisioned IOPS. Setting this implies a storage_type of io1."
+   type        = number
+   default     = 3000
+ }
 
 variable "allocated_storage" {
   description = "RDS allocated storage in gibibytes"
   type        = number
-  default     = 20
+  default     = 400
 }
 
 variable "backup_retention_period" {
@@ -149,12 +160,6 @@ variable "max_allocated_storage" {
   description = " Specifies the value for Storage Autoscaling"
   type        = number
   default     = 1000
-}
-
-variable "storage_type" {
-  description = "gp2 (general purpose SSD)"
-  type        = string
-  default     = "gp2"
 }
 
 variable "engine" {
