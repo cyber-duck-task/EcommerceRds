@@ -63,6 +63,7 @@ resource "aws_db_instance" "ecommerce" {
   backup_retention_period = var.backup_retention_period
   max_allocated_storage  = var.max_allocated_storage
   storage_type           = var.storage_type
+  iops                   = var.iops
   storage_encrypted      = var.storage_encrypted
   engine                 = var.engine
   engine_version         = var.engine_version
