@@ -6,7 +6,7 @@ Multi-AZ argument would provision the DB instance in different AZs in the same r
 
 Having the DB instance in different AZs would make the Database highly available and also serve as a disaster recovery.
 
-So basically there will be a main RDS DB_instance set up in AZ(eu-west-2a) whwre our application can read and write.
+So basically there will be a main RDS DB_instance set up in AZ(eu-west-2a) where our application can read and write.
 
 Similarly, we going to have a standby RDS DB_instance in another AZ(eu-west-2b) with a SYNC REPLICATION between the two DB instance.
 
